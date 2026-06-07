@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const db = require('../db'); // Ajusta la ruta según tu proyecto
+const db = require('../db');
 
 router.post('/', async (req, res) => {
   try {
