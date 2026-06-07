@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db'); // Ajusta la ruta según tu proyecto
 
-// ─────────────────────────────────────────────────────────────
-// POST /categorias — Registrar nueva categoría
-// ─────────────────────────────────────────────────────────────
 router.post('/', async (req, res) => {
   try {
     const { nombre, descripcion } = req.body;
@@ -30,9 +27,6 @@ router.post('/', async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────
-// GET /categorias — Listar todas las categorías
-// ─────────────────────────────────────────────────────────────
 router.get('/', async (req, res) => {
   try {
     const [categorias] = await db.query(
@@ -46,9 +40,6 @@ router.get('/', async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────
-// GET /categorias/:id — Categoría + sus productos
-// ─────────────────────────────────────────────────────────────
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -62,8 +53,6 @@ router.get('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Categoría no encontrada.' });
     }
 
-    // ⚠️  Verifica que el FK en tu tabla productos se llame "categoriaId"
-    //     Cámbialo por "categoria_id" o "id_categoria" si usas otra convención
     const [productos] = await db.query(
       'SELECT * FROM productos WHERE categoriaId = ?',
       [id]
@@ -76,9 +65,6 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────
-// PATCH /categorias/:id — Actualizar categoría
-// ─────────────────────────────────────────────────────────────
 router.patch('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -120,9 +106,6 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
-// ─────────────────────────────────────────────────────────────
-// DELETE /categorias/:id — Eliminar categoría y sus productos
-// ─────────────────────────────────────────────────────────────
 router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -136,8 +119,6 @@ router.delete('/:id', async (req, res) => {
       return res.status(404).json({ error: 'Categoría no encontrada.' });
     }
 
-    // Primero eliminar los productos de la categoría,
-    // luego la categoría (evita error de FK constraint)
     await db.query('DELETE FROM productos WHERE categoriaId = ?', [id]);
     await db.query('DELETE FROM categorias WHERE id = ?', [id]);
 
